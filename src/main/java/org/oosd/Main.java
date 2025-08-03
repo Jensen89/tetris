@@ -2,36 +2,53 @@ package org.oosd;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.concurrent.Task;
+import javafx.scene.paint.Color;
+
+import java.util.Collections;
 
 public class Main extends Application {
 
+    private StackPane root;
+    private Scene scene;
+    private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+
+        // Initialize root and scene
+        root = new StackPane();
+        scene = new Scene(root, 600, 600);
+
+        // Set up primary stage
+        primaryStage.setTitle("My JavaFX Application");
+        primaryStage.setScene(scene);
 
         Stage splashStage = new Stage(StageStyle.UNDECORATED);
 
         ImageView splashImage = new ImageView(new Image(getClass().getResource("/splash-image.png").toExternalForm()));
-        splashImage.setFitWidth(640);
-        splashImage.setFitHeight(480);
+        splashImage.setFitWidth(600);
+        splashImage.setFitHeight(600);
         splashImage.setPreserveRatio(true);
         splashImage.setSmooth(true);
 
         Label loadingLabel = new Label("Loading...");
 
         StackPane splashLayout = new StackPane(splashImage, loadingLabel);
-        Scene splashScene = new Scene(splashLayout, 640, 480);
+        Scene splashScene = new Scene(splashLayout, 600, 600);
 
         splashStage.setScene(splashScene);
         splashStage.show();
@@ -47,37 +64,90 @@ public class Main extends Application {
             protected void succeeded() {
                 Platform.runLater(() -> {
                     splashStage.close();
-                    showMainStage(primaryStage);
+                    showMainScreen();
+                    primaryStage.show();
                 });
             }
         };
 
-        new Thread((loadTask)).start();
-
+        new Thread(loadTask).start();
     }
 
-    private void showMainStage(Stage primaryStage) {
+    public void showMainScreen() {
+        VBox mainScreen = new VBox(10);
+        mainScreen.setPadding(new Insets(20));
+        mainScreen.setAlignment(Pos.CENTER);
 
-            Label label = new Label("Please input your name:");
-            TextField input = new TextField();
-            Button btn = new Button("Click Me");
-            StackPane root = new StackPane();
-            root.getChildren().addAll(label, input, btn);
-            btn.setOnAction(e -> {
-                int x = 10;
-                int y = x + 5;
-                System.out.println(x + y);
-                label.setText("Hello, " + input.getText() + "!");
-            });
-            StackPane.setAlignment(label, Pos.TOP_CENTER);
-            StackPane.setAlignment(input, Pos.CENTER);
-            StackPane.setAlignment(btn, Pos.BOTTOM_CENTER);
-            Scene scene = new Scene(root, 400, 200);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("JavaFX Demo");
-            primaryStage.show();
-        }
+        Button startButton = new Button("Start Game");
+        startButton.setOnAction(e -> showGameScreen());
 
+        Button configButton = new Button("Configuration");
+        configButton.setOnAction(e -> showConfigScreen());
+
+        Button exitButton = new Button("Exit");
+        exitButton.setOnAction(e -> System.exit(0));
+
+        mainScreen.getChildren().addAll(startButton, configButton,  exitButton);
+        root.getChildren().setAll(mainScreen);
+    }
+
+    private void showGameScreen() {
+        VBox gameScreen = new VBox(10);
+        gameScreen.setPadding(new Insets(20));
+        gameScreen.setAlignment(Pos.TOP_LEFT);
+
+
+        Circle ball = new Circle(10, Color.RED);
+        ball.setCenterX(600 / 2);
+        ball.setCenterY(600 / 2);
+
+
+        // Back button
+        Button backButton = new Button("Back");
+        backButton.setLayoutX(10);
+        backButton.setLayoutY(10);
+        backButton.setOnAction(e -> showMainScreen());
+
+        gameScreen.getChildren().addAll(backButton,  ball);
+        root.getChildren().setAll(gameScreen);
+    }
+
+    private void showConfigScreen() {
+        VBox configScreen = new VBox(10);
+        configScreen.setPadding(new Insets(20));
+        configScreen.setAlignment(Pos.TOP_LEFT);
+
+        Label label = new Label("Configuration");
+
+        // Back button
+        Button backButton = new Button("Back");
+        backButton.setLayoutX(10);
+        backButton.setLayoutY(10);
+        backButton.setOnAction(e -> showMainScreen());
+
+        // Setting buttons
+        CheckBox musicCB =  new CheckBox("Music (on/off)");
+        CheckBox soundCB =  new CheckBox("Sound Effects (on/off)");
+        CheckBox aiCB =  new CheckBox("AI Play (on/off)");
+        CheckBox extendCB =  new CheckBox("Extend Mode (on/off)");
+
+        Label fWidthLabel = new Label("Field Width");
+        Slider fWidthSlider = new Slider(0, 100, 600);
+        fWidthSlider.setShowTickLabels(true);
+        fWidthSlider.setMajorTickUnit(100);
+        Label fHeightLabel = new Label("Field Height");
+        Slider fHeightSlider = new Slider(0, 100, 600);
+        fHeightSlider.setShowTickLabels(true);
+        fHeightSlider.setMajorTickUnit(100);
+
+        Label levelLabel = new Label("Game Level");
+        Slider levelSlider = new Slider(0, 100, 600);
+        levelSlider.setShowTickLabels(true);
+        levelSlider.setMajorTickUnit(10);
+
+        configScreen.getChildren().addAll(label, backButton, musicCB,  soundCB,   aiCB,  extendCB, fWidthLabel, fWidthSlider, fHeightLabel, fHeightSlider,  levelLabel, levelSlider);
+        root.getChildren().setAll(configScreen);
+    }
 
     public static void main(String[] args) {
         launch(args);
