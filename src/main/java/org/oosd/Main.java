@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
@@ -17,7 +16,6 @@ import javafx.stage.StageStyle;
 import javafx.concurrent.Task;
 import javafx.scene.paint.Color;
 
-import java.util.Collections;
 
 public class Main extends Application {
 
@@ -25,15 +23,14 @@ public class Main extends Application {
     private Scene scene;
     private Stage primaryStage;
 
+    // Splash screen
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        // Initialize root and scene
         root = new StackPane();
         scene = new Scene(root, 600, 600);
 
-        // Set up primary stage
         primaryStage.setTitle("My JavaFX Application");
         primaryStage.setScene(scene);
 
@@ -73,6 +70,7 @@ public class Main extends Application {
         new Thread(loadTask).start();
     }
 
+    //Main menu
     public void showMainScreen() {
         VBox mainScreen = new VBox(10);
         mainScreen.setPadding(new Insets(20));
@@ -91,7 +89,9 @@ public class Main extends Application {
         root.getChildren().setAll(mainScreen);
     }
 
+    //Game screen
     private void showGameScreen() {
+        // Change to pane
         VBox gameScreen = new VBox(10);
         gameScreen.setPadding(new Insets(20));
         gameScreen.setAlignment(Pos.TOP_LEFT);
@@ -112,6 +112,7 @@ public class Main extends Application {
         root.getChildren().setAll(gameScreen);
     }
 
+    // Configuration screen
     private void showConfigScreen() {
         VBox configScreen = new VBox(10);
         configScreen.setPadding(new Insets(20));
