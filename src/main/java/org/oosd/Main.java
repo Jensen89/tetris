@@ -85,7 +85,10 @@ public class Main extends Application {
         Button exitButton = new Button("Exit");
         exitButton.setOnAction(e -> System.exit(0));
 
-        mainScreen.getChildren().addAll(startButton, configButton,  exitButton);
+        Button highScoresButton = new Button("High Scores");
+        highScoresButton.setOnAction(e -> showHighScoresScreen());
+
+        mainScreen.getChildren().addAll(startButton, configButton, exitButton, highScoresButton);
         root.getChildren().setAll(mainScreen);
     }
 
@@ -148,6 +151,22 @@ public class Main extends Application {
 
         configScreen.getChildren().addAll(label, backButton, musicCB,  soundCB,   aiCB,  extendCB, fWidthLabel, fWidthSlider, fHeightLabel, fHeightSlider,  levelLabel, levelSlider);
         root.getChildren().setAll(configScreen);
+    }
+
+    private void showHighScoresScreen() {
+        VBox highScoresScreen = new VBox(10);
+        highScoresScreen.setPadding(new Insets(20));
+        highScoresScreen.setAlignment(Pos.TOP_LEFT);
+
+        Label label = new Label("High Scores");
+
+        Button backButton = new Button("Back");
+        backButton.setLayoutX(10);
+        backButton.setLayoutY(10);
+        backButton.setOnAction(e -> showMainScreen());
+
+        highScoresScreen.getChildren().addAll(label, backButton);
+        root.getChildren().setAll(highScoresScreen);
     }
 
     public static void main(String[] args) {
