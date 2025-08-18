@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Objects;
+
 public class GameScreen {
     private final StackPane root;
     private final Main mainApp;
@@ -139,7 +141,7 @@ public class GameScreen {
                 break;
             }
 
-            // Check collision with existing blocks (allow negative Y for pieces entering from top)
+            // Check collision with existing blocks
             if (gridY >= 0 && gameGrid[gridY][gridX] == 1) {
                 canPlace = false;
                 break;
@@ -177,7 +179,7 @@ public class GameScreen {
             renderGameGrid();
             return true;
         }
-        return false; // Piece cannot move down (landed)
+        return false; // Piece cannot move down
     }
 
     // Hard drop - instantly drop piece to the bottom
@@ -186,7 +188,7 @@ public class GameScreen {
 
         // Keep moving down until piece can't move anymore
         while (movePieceDown()) {
-            // Continue dropping
+
         }
 
         // Lock the piece and spawn new one
@@ -221,7 +223,7 @@ public class GameScreen {
         // Clear any complete lines
         int linesCleared = clearCompleteLines();
         if (linesCleared > 0) {
-            // Here you could update score, play sound, etc.
+            // add update score, play sound, etc.
             System.out.println("Cleared " + linesCleared + " lines!");
         }
 
@@ -230,15 +232,11 @@ public class GameScreen {
 
     // Spawn a new piece
     private void spawnNewPiece() {
-        if (nextPiece != null) {
-            currentPiece = nextPiece;
-        } else {
-            currentPiece = TetrominoFactory.createRandomPiece(GRID_WIDTH / 2 - 1, -1);
-        }
+        currentPiece = Objects.requireNonNullElseGet(nextPiece, () -> TetrominoFactory.createRandomPiece(GRID_WIDTH / 2 - 1, -1));
 
         nextPiece = TetrominoFactory.createRandomPiece(GRID_WIDTH / 2 - 1, -1);
 
-        // Check if game over (new piece can't be placed)
+        // Check if game over
         if (!canPlacePiece(currentPiece, 0, 0, currentPiece.getRotation())) {
             gameOver();
             return;
@@ -298,7 +296,7 @@ public class GameScreen {
             stopGame();
             System.out.println("Game Paused - Press ESC to resume");
         } else {
-            startGame();
+            startGame(); // need to replace with new method that resumes the game, not restarts
             System.out.println("Game Resumed");
         }
     }
@@ -333,12 +331,7 @@ public class GameScreen {
         return block;
     }
 
-    // Check if a position is valid (within bounds and empty)
-    private boolean isValidPosition(int gridX, int gridY) {
-        return gridX >= 0 && gridX < GRID_WIDTH &&
-                gridY >= 0 && gridY < GRID_HEIGHT &&
-                gameGrid[gridY][gridX] == 0;
-    }
+
 
     // Check if a line is complete
     private boolean isLineComplete(int row) {
@@ -354,9 +347,7 @@ public class GameScreen {
     private void clearLine(int lineRow) {
         // Move all rows above down by one
         for (int row = lineRow; row > 0; row--) {
-            for (int col = 0; col < GRID_WIDTH; col++) {
-                gameGrid[row][col] = gameGrid[row - 1][col];
-            }
+            System.arraycopy(gameGrid[row - 1], 0, gameGrid[row], 0, GRID_WIDTH);
         }
 
         // Clear the top row
@@ -397,7 +388,6 @@ public class GameScreen {
                     movePieceRight();
                     break;
                 case DOWN:
-                    // Soft drop - move down one step
                     if (!movePieceDown()) {
                         lockPiece();
                         spawnNewPiece();
