@@ -21,6 +21,10 @@ import javafx.scene.paint.Color;
 
 public class Main extends Application {
 
+    private MainMenuScreen mainMenuScreen;
+    private HighScoresScreen highScoresScreen;
+    private ConfigScreen configScreen;
+
     private TetrisPiece currentPiece;
     private TetrisPiece nextPiece;
 
@@ -80,7 +84,7 @@ public class Main extends Application {
             protected void succeeded() {
                 Platform.runLater(() -> {
                     splashStage.close();
-                    showMainScreen();
+                    showMainMenuScreen();
                     primaryStage.show();
                 });
             }
@@ -90,29 +94,16 @@ public class Main extends Application {
     }
 
     //Main menu
-    public void showMainScreen() {
-        VBox mainScreen = new VBox(10);
-        mainScreen.setPadding(new Insets(20));
-        mainScreen.setAlignment(Pos.CENTER);
+    public void showMainMenuScreen() {
+        if (mainMenuScreen == null) {
+            mainMenuScreen = new MainMenuScreen(root, this);
+        }
+        mainMenuScreen.show();
 
-        Button startButton = new Button("Start Game");
-        startButton.setOnAction(e -> showGameScreen());
-
-        Button configButton = new Button("Configuration");
-        configButton.setOnAction(e -> showConfigScreen());
-
-        Button exitButton = new Button("Exit");
-        exitButton.setOnAction(e -> System.exit(0));
-
-        Button highScoresButton = new Button("High Scores");
-        highScoresButton.setOnAction(e -> showHighScoresScreen());
-
-        mainScreen.getChildren().addAll(startButton, configButton, highScoresButton, exitButton);
-        root.getChildren().setAll(mainScreen);
     }
 
     //Game screen
-    private void showGameScreen() {
+    public void showGameScreen() {
 
         //Main container
         VBox gameScreen = new VBox(20);
@@ -140,7 +131,7 @@ public class Main extends Application {
         Label gameTitle = new Label("PLAY");
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> showMainScreen());
+        backButton.setOnAction(e -> showMainMenuScreen());
 
         gameScreen.getChildren().addAll(gameTitle, gameArea, backButton);
 
@@ -507,58 +498,18 @@ public class Main extends Application {
     }
 
 
-    // Configuration screen
-    private void showConfigScreen() {
-        VBox configScreen = new VBox(10);
-        configScreen.setPadding(new Insets(20));
-        configScreen.setAlignment(Pos.TOP_LEFT);
-
-        Label label = new Label("Configuration");
-
-        // Back button
-        Button backButton = new Button("Back");
-        backButton.setLayoutX(10);
-        backButton.setLayoutY(10);
-        backButton.setOnAction(e -> showMainScreen());
-
-        // Setting buttons
-        CheckBox musicCB =  new CheckBox("Music (on/off)");
-        CheckBox soundCB =  new CheckBox("Sound Effects (on/off)");
-        CheckBox aiCB =  new CheckBox("AI Play (on/off)");
-        CheckBox extendCB =  new CheckBox("Extend Mode (on/off)");
-
-        Label fWidthLabel = new Label("Field Width");
-        Slider fWidthSlider = new Slider(0, 100, 600);
-        fWidthSlider.setShowTickLabels(true);
-        fWidthSlider.setMajorTickUnit(100);
-        Label fHeightLabel = new Label("Field Height");
-        Slider fHeightSlider = new Slider(0, 100, 600);
-        fHeightSlider.setShowTickLabels(true);
-        fHeightSlider.setMajorTickUnit(100);
-
-        Label levelLabel = new Label("Game Level");
-        Slider levelSlider = new Slider(0, 100, 600);
-        levelSlider.setShowTickLabels(true);
-        levelSlider.setMajorTickUnit(10);
-
-        configScreen.getChildren().addAll(label, backButton, musicCB,  soundCB,   aiCB,  extendCB, fWidthLabel, fWidthSlider, fHeightLabel, fHeightSlider,  levelLabel, levelSlider);
-        root.getChildren().setAll(configScreen);
+    public void showConfigScreen() {
+        if (configScreen == null) {
+            configScreen = new ConfigScreen(root, this);
+        }
+        configScreen.show();
     }
 
-    private void showHighScoresScreen() {
-        VBox highScoresScreen = new VBox(10);
-        highScoresScreen.setPadding(new Insets(20));
-        highScoresScreen.setAlignment(Pos.TOP_LEFT);
-
-        Label label = new Label("High Scores");
-
-        Button backButton = new Button("Back");
-        backButton.setLayoutX(10);
-        backButton.setLayoutY(10);
-        backButton.setOnAction(e -> showMainScreen());
-
-        highScoresScreen.getChildren().addAll(label, backButton);
-        root.getChildren().setAll(highScoresScreen);
+    public void showHighScoresScreen() {
+        if (highScoresScreen == null) {
+            highScoresScreen = new HighScoresScreen(root, this);
+        }
+        highScoresScreen.show();
     }
 
     public static void main(String[] args) {

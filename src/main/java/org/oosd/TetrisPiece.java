@@ -244,15 +244,14 @@ class TetrominoFactory {
     }
 
     public static TetrisPiece createPiece(String type, int startX, int startY) {
-        switch (type.toUpperCase()) {
-            case "I": return new IPiece(startX, startY);
-            case "O": return new OPiece(startX, startY);
-            case "T": return new TPiece(startX, startY);
-            case "S": return new SPiece(startX, startY);
-            case "Z": return new ZPiece(startX, startY);
-            case "J": return new JPiece(startX, startY);
-            case "L": return new LPiece(startX, startY);
-            default: return new IPiece(startX, startY);
-        }
+        return switch (type.toUpperCase()) {
+            case "O" -> new OPiece(startX, startY);
+            case "T" -> new TPiece(startX, startY);
+            case "S" -> new SPiece(startX, startY);
+            case "Z" -> new ZPiece(startX, startY);
+            case "J" -> new JPiece(startX, startY);
+            case "L" -> new LPiece(startX, startY);
+            default -> new IPiece(startX, startY);
+        };
     }
 }
