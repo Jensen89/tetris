@@ -1,4 +1,4 @@
-package org.oosd;
+package org.oosd.screens;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.oosd.Main;
 
 public class SplashScreen {
     private final Main mainApp;

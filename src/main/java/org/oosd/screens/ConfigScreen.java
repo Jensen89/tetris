@@ -1,4 +1,4 @@
-package org.oosd;
+package org.oosd.screens;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.oosd.Main;
 
 public class ConfigScreen {
     private final StackPane root;

@@ -1,4 +1,4 @@
-package org.oosd;
+package org.oosd.dialogs;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

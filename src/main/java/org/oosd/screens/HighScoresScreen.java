@@ -1,4 +1,4 @@
-package org.oosd;
+package org.oosd.screens;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.oosd.Main;
 
 public class HighScoresScreen {
     private final StackPane root;

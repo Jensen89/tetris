@@ -1,4 +1,4 @@
-package org.oosd;
+package org.oosd.screens;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.oosd.dialogs.ExitConfirmationDialog;
+import org.oosd.Main;
 
 public class MainMenuScreen {
     private final StackPane root;
