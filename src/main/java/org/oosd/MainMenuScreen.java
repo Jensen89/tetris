@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class MainMenuScreen {
     private final StackPane root;
@@ -30,7 +31,18 @@ public class MainMenuScreen {
         highScoresButton.setOnAction(e -> mainApp.showHighScoresScreen());
 
         Button exitButton = new Button("Exit");
-        exitButton.setOnAction(e -> System.exit(0));
+        exitButton.setOnAction(e -> {
+
+            Stage stage = (Stage) root.getScene().getWindow();
+
+            ExitConfirmationDialog exitDialog = new ExitConfirmationDialog();
+            boolean shouldExit =  exitDialog.show(stage);
+
+            if (shouldExit) {
+                System.exit(0);
+            }
+
+                });
 
         mainScreen.getChildren().addAll(startButton, configButton, highScoresButton, exitButton);
         root.getChildren().setAll(mainScreen);

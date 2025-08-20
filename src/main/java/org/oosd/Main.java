@@ -18,7 +18,7 @@ public class Main extends Application {
     private Stage primaryStage;
 
 
-    // Splash screen
+    // Set up application window
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -29,6 +29,7 @@ public class Main extends Application {
         primaryStage.setTitle("My JavaFX Application");
         primaryStage.setScene(scene);
 
+        // Show splash screen
         SplashScreen splashScreen = new SplashScreen(this, primaryStage, 600, 600);
         splashScreen.show();
     }

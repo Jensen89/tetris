@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 import java.util.Objects;
 
@@ -17,22 +18,25 @@ public class GameScreen {
     private final StackPane root;
     private final Main mainApp;
 
-    // Game components
+    //Game components
     private TetrisPiece currentPiece;
     private TetrisPiece nextPiece;
     private AnimationTimer gameLoop;
     private long lastFallTime = 0;
     private long fallInterval = 1_000_000_000L; // 1 second in nanoseconds
     private boolean gameRunning = false;
+    private boolean gamePaused = false;
+    private boolean gameStarted = false;
 
-    // Game area dimensions
+    //Game area dimensions
     private static final int GRID_WIDTH = 10;
     private static final int GRID_HEIGHT = 20;
     private static final int BLOCK_SIZE = 30;
 
-    // Track game state with grid
+    //Track game state with grid
     private int[][] gameGrid = new int[GRID_HEIGHT][GRID_WIDTH];
     private Pane gameArea;
+    private VBox gameScreenContainer;
 
     public GameScreen(StackPane root, Main mainApp) {
         this.root = root;
@@ -40,21 +44,21 @@ public class GameScreen {
     }
 
     public void show() {
-        // Main container
-        VBox gameScreen = new VBox(20);
-        gameScreen.setPadding(new Insets(20));
-        gameScreen.setAlignment(Pos.TOP_CENTER);
+        //Main container
+        gameScreenContainer = new VBox(20);
+        gameScreenContainer.setPadding(new Insets(20));
+        gameScreenContainer.setAlignment(Pos.TOP_CENTER);
 
         final int GAME_WIDTH = GRID_WIDTH * BLOCK_SIZE;
         final int GAME_HEIGHT = GRID_HEIGHT * BLOCK_SIZE;
 
-        // Game pane with temp static size - add ability to change variables later
+        //Game pane with temp static size - add ability to change variables later
         gameArea = new Pane();
         gameArea.setPrefSize(GAME_WIDTH, GAME_HEIGHT);
         gameArea.setMaxSize(GAME_WIDTH, GAME_HEIGHT);
         gameArea.setMinSize(GAME_WIDTH, GAME_HEIGHT);
 
-        // Temp game area styling
+        //Temp game area styling
         gameArea.setStyle(
                 "-fx-border-color: #333333;" +
                         "-fx-border-width: 3;" +
@@ -67,15 +71,36 @@ public class GameScreen {
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
-            stopGame(); // Stop the game when going back
-            mainApp.showMainMenuScreen();
+            //Pause the game first if it's running
+            if (gameRunning && !gamePaused) {
+                pauseGame();
+            }
+
+            Stage stage = (Stage) root.getScene().getWindow();
+
+            //Show confirmation dialog
+            ExitConfirmationDialog confirmDialog = new ExitConfirmationDialog(
+                    "Quit Game",
+                    "Are you sure you want to quit the current game?"
+            );
+
+            boolean shouldQuit = confirmDialog.show(stage);
+
+            if (shouldQuit) {
+                stopGame();
+                mainApp.showMainMenuScreen();
+            } else {
+                if (gamePaused && gameStarted) {
+                    resumeGame();
+                }
+            }
         });
 
-        gameScreen.getChildren().addAll(gameTitle, gameArea, backButton);
+        gameScreenContainer.getChildren().addAll(gameTitle, gameArea, backButton);
 
-        root.getChildren().setAll(gameScreen);
+        root.getChildren().setAll(gameScreenContainer);
 
-        setupKeyboardControls(gameScreen);
+        setupKeyboardControls(gameScreenContainer);
 
         renderGameGrid();
 
@@ -91,20 +116,20 @@ public class GameScreen {
     }
 
     private void renderGameGrid() {
-        // Clear existing visual blocks
+        //Clear existing visual blocks
         gameArea.getChildren().removeIf(node -> node instanceof Rectangle);
 
-        // Draw fixed blocks from game grid
+        //Draw fixed blocks from game grid
         for (int row = 0; row < GRID_HEIGHT; row++) {
             for (int col = 0; col < GRID_WIDTH; col++) {
                 if (gameGrid[row][col] == 1) {
-                    Rectangle block = createBlock(col, row, Color.LIGHTGRAY);
+                    Rectangle block = createBlock(col, row, Color.DARKGRAY); // Change this to keep block original colour
                     gameArea.getChildren().add(block);
                 }
             }
         }
 
-        // Draw current falling piece
+        //Draw current falling piece
         if (currentPiece != null) {
             int[][] positions = currentPiece.getOccupiedPositions();
             for (int[] pos : positions) {
@@ -116,13 +141,14 @@ public class GameScreen {
         }
     }
 
-    // Check if a piece can be placed at a specific position
+    //Check if a piece can be placed at a specific position
     private boolean canPlacePiece(TetrisPiece piece, int offsetX, int offsetY, int rotation) {
-        // Temporarily modify piece position and rotation
+        //Save current position of piece
         int originalX = piece.getX();
         int originalY = piece.getY();
         int originalRotation = piece.getRotation();
 
+        //Test new position is valid
         piece.x = originalX + offsetX;
         piece.y = originalY + offsetY;
         piece.rotation = rotation;
@@ -130,25 +156,25 @@ public class GameScreen {
         int[][] positions = piece.getOccupiedPositions();
         boolean canPlace = true;
 
-        // Check each block position
+        //Check each block position
         for (int[] pos : positions) {
             int gridX = pos[0];
             int gridY = pos[1];
 
-            // Check bounds
+            //Check bounds
             if (gridX < 0 || gridX >= GRID_WIDTH || gridY >= GRID_HEIGHT) {
                 canPlace = false;
                 break;
             }
 
-            // Check collision with existing blocks
+            //Check collision with existing blocks
             if (gridY >= 0 && gameGrid[gridY][gridX] == 1) {
                 canPlace = false;
                 break;
             }
         }
 
-        // Restore original position and rotation
+        //Restore original position and rotation
         piece.x = originalX;
         piece.y = originalY;
         piece.rotation = originalRotation;
@@ -156,7 +182,7 @@ public class GameScreen {
         return canPlace;
     }
 
-    // Move current piece left
+    //Move current piece left
     private void movePieceLeft() {
         if (currentPiece != null && canPlacePiece(currentPiece, -1, 0, currentPiece.getRotation())) {
             currentPiece.moveLeft();
@@ -164,7 +190,7 @@ public class GameScreen {
         }
     }
 
-    // Move current piece right
+    //Move current piece right
     private void movePieceRight() {
         if (currentPiece != null && canPlacePiece(currentPiece, 1, 0, currentPiece.getRotation())) {
             currentPiece.moveRight();
@@ -172,31 +198,28 @@ public class GameScreen {
         }
     }
 
-    // Move current piece down
+    //Move current piece down
     private boolean movePieceDown() {
         if (currentPiece != null && canPlacePiece(currentPiece, 0, 1, currentPiece.getRotation())) {
             currentPiece.moveDown();
             renderGameGrid();
             return true;
         }
-        return false; // Piece cannot move down
+        return false;
     }
 
-    // Hard drop - instantly drop piece to the bottom
+    //Hard drop - instantly drop piece to the bottom
     private void hardDropPiece() {
         if (currentPiece == null) return;
 
-        // Keep moving down until piece can't move anymore
         while (movePieceDown()) {
 
         }
-
-        // Lock the piece and spawn new one
         lockPiece();
         spawnNewPiece();
     }
 
-    // Rotate current piece
+    //Rotate current piece
     private void rotatePiece() {
         if (currentPiece != null) {
             int newRotation = (currentPiece.getRotation() + 1) % 4;
@@ -207,7 +230,7 @@ public class GameScreen {
         }
     }
 
-    // Lock current piece into the game grid
+    //Lock current piece into the game grid
     private void lockPiece() {
         if (currentPiece == null) return;
 
@@ -220,23 +243,23 @@ public class GameScreen {
             }
         }
 
-        // Clear any complete lines
+        //Clear any complete lines
         int linesCleared = clearCompleteLines();
         if (linesCleared > 0) {
-            // add update score, play sound, etc.
+            //Add update score, play sound, etc. here
             System.out.println("Cleared " + linesCleared + " lines!");
         }
 
         currentPiece = null;
     }
 
-    // Spawn a new piece
+    //Spawn a new piece
     private void spawnNewPiece() {
         currentPiece = Objects.requireNonNullElseGet(nextPiece, () -> TetrominoFactory.createRandomPiece(GRID_WIDTH / 2 - 1, -1));
 
         nextPiece = TetrominoFactory.createRandomPiece(GRID_WIDTH / 2 - 1, -1);
 
-        // Check if game over
+        //Check if game over
         if (!canPlacePiece(currentPiece, 0, 0, currentPiece.getRotation())) {
             gameOver();
             return;
@@ -245,10 +268,15 @@ public class GameScreen {
         renderGameGrid();
     }
 
-    // Start the game loop
+    //Start the game loop
     private void startGame() {
         gameRunning = true;
-        spawnNewPiece();
+        gamePaused = false;
+        gameStarted = true;
+
+        if (currentPiece == null) {
+            spawnNewPiece();
+        }
 
         if (gameLoop != null) {
             gameLoop.stop();
@@ -257,21 +285,18 @@ public class GameScreen {
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                if (!gameRunning) {
-                    stop();
+                if (!gameRunning || gamePaused) {
                     return;
                 }
 
-                // Check if it's time for the piece to fall
+                //Check if it's time for the piece to fall
                 if (now - lastFallTime >= fallInterval) {
                     if (currentPiece != null) {
                         if (!movePieceDown()) {
-                            // Piece can't move down, lock it and spawn new one
                             lockPiece();
                             spawnNewPiece();
                         }
                     } else {
-                        // No current piece, spawn one
                         spawnNewPiece();
                     }
                     lastFallTime = now;
@@ -282,26 +307,44 @@ public class GameScreen {
         gameLoop.start();
     }
 
-    // Stop the game loop
+    //Pause the game
+    private void pauseGame() {
+        gamePaused = true;
+        System.out.println("Game Paused");
+    }
+
+    //Resume the game
+    private void resumeGame() {
+        gamePaused = false;
+        System.out.println("Game Resumed");
+        // Ensure keyboard focus returns to game
+        gameScreenContainer.requestFocus();
+    }
+
+    //Stop the game loop completely
     private void stopGame() {
         gameRunning = false;
+        gamePaused = false;
+        gameStarted = false;
         if (gameLoop != null) {
             gameLoop.stop();
         }
     }
 
-    // Pause/Resume game
+    //Toggle pause/resume
     private void togglePause() {
-        if (gameRunning) {
-            stopGame();
-            System.out.println("Game Paused - Press ESC to resume");
+        if (!gameStarted) {
+            return;
+        }
+
+        if (gamePaused) {
+            resumeGame();
         } else {
-            startGame(); // need to replace with new method that resumes the game, not restarts
-            System.out.println("Game Resumed");
+            pauseGame();
         }
     }
 
-    // Game over handling
+    //Game over handling
     private void gameOver() {
         stopGame();
         System.out.println("Game Over! Press R to restart");
@@ -309,11 +352,13 @@ public class GameScreen {
         nextPiece = null;
     }
 
-    // Restart the game
+    //Restart the game - can remove this
     private void restartGame() {
         initialiseGameGrid();
         currentPiece = null;
         nextPiece = null;
+        gameStarted = false;
+        gamePaused = false;
         renderGameGrid();
         startGame();
     }
@@ -324,16 +369,14 @@ public class GameScreen {
         block.setStroke(Color.DARKGRAY);
         block.setStrokeWidth(1);
 
-        // Position based on grid coordinates
+        //Position based on grid coordinates
         block.setX(gridX * BLOCK_SIZE);
         block.setY(gridY * BLOCK_SIZE);
 
         return block;
     }
 
-
-
-    // Check if a line is complete
+    //Check if a line is complete
     private boolean isLineComplete(int row) {
         for (int col = 0; col < GRID_WIDTH; col++) {
             if (gameGrid[row][col] == 0) {
@@ -343,14 +386,14 @@ public class GameScreen {
         return true;
     }
 
-    // Clear a complete line and move everything down
+    //Clear a complete line and move everything down
     private void clearLine(int lineRow) {
-        // Move all rows above down by one
+        //Move all rows above down by one
         for (int row = lineRow; row > 0; row--) {
             System.arraycopy(gameGrid[row - 1], 0, gameGrid[row], 0, GRID_WIDTH);
         }
 
-        // Clear the top row
+        //Clear the top row
         for (int col = 0; col < GRID_WIDTH; col++) {
             gameGrid[0][col] = 0;
         }
@@ -358,28 +401,33 @@ public class GameScreen {
         renderGameGrid();
     }
 
-    // Check and clear all complete lines
+    //Check and clear all complete lines
     private int clearCompleteLines() {
         int linesCleared = 0;
 
-        // Check from bottom to top
+        //Check from bottom to top
         for (int row = GRID_HEIGHT - 1; row >= 0; row--) {
             if (isLineComplete(row)) {
                 clearLine(row);
                 linesCleared++;
-                row++; // Check this row again since everything moved down
+                row++; //Check this row again since everything moved down
             }
         }
 
         return linesCleared;
     }
 
-    // Set up keyboard event handling
+    //Set up keyboard event handling
     private void setupKeyboardControls(VBox gameScreenContainer) {
         gameScreenContainer.setFocusTraversable(true);
         gameScreenContainer.requestFocus();
 
         gameScreenContainer.setOnKeyPressed(event -> {
+            //Don't process keys if game is paused (except P to unpause)
+            if (gamePaused && event.getCode() != javafx.scene.input.KeyCode.P) {
+                return;
+            }
+
             switch (event.getCode()) {
                 case LEFT:
                     movePieceLeft();
@@ -397,19 +445,19 @@ public class GameScreen {
                     rotatePiece();
                     break;
                 case SPACE:
-                    // Hard drop - instantly drop to bottom
+                    //Hard drop - instantly drop to bottom
                     hardDropPiece();
                     break;
                 case R:
-                    // Restart game
+                    //Restart game
                     restartGame();
                     break;
-                case ESCAPE:
-                    // Pause/Resume game
+                case P:
+                    //Pause/Resume game
                     togglePause();
                     break;
             }
-            event.consume(); // Prevent event from bubbling up
+            event.consume(); //Prevent event from bubbling up
         });
     }
 }
