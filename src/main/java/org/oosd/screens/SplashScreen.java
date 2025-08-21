@@ -33,7 +33,15 @@ public class SplashScreen {
         splashImage.setPreserveRatio(true);
         splashImage.setSmooth(true);
 
-        Label loadingLabel = new Label("Loading...");
+        Label loadingLabel = new Label("Loading... \nGroup 48 \n2006ICT \nAdam Jensen \ns2780406");
+        //Inline styling as it is only one element that won't be reused
+        loadingLabel.setStyle(
+                "-fx-font-size: 18;" +
+                "-fx-font-weight: bold;" +
+                "-fx-text-fill: white;" +
+                "-fx-alignment: center;" +
+                "-fx-font-family: sans-serif;"
+        );
 
         StackPane splashLayout = new StackPane(splashImage, loadingLabel);
         Scene splashScene = new Scene(splashLayout, width, height);

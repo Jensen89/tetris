@@ -27,6 +27,8 @@ public class Main extends Application {
         root = new StackPane();
         scene = new Scene(root, 800, 900);
 
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
         primaryStage.setTitle("My JavaFX Application");
         primaryStage.setScene(scene);
 

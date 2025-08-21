@@ -36,6 +36,7 @@ public class ConfigScreen {
         configScreen.setAlignment(Pos.TOP_CENTER);
 
         Label titleLabel = new Label("Configuration");
+        titleLabel.getStyleClass().add("title-label");
 
         VBox settingsContainer = new VBox(10);
         settingsContainer.setAlignment(Pos.CENTER_LEFT);

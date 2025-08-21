@@ -24,6 +24,7 @@ public class HighScoresScreen {
         highScoresScreen.setAlignment(Pos.TOP_CENTER);
 
         Label titleLabel = new Label("High Scores");
+        titleLabel.getStyleClass().add("title-label");
 
         //Dummy high score data
         String[] names = {

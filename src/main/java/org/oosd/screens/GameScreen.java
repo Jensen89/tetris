@@ -81,6 +81,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
         gameAreaContainer.getChildren().addAll(gameArea, pauseOverlay);
 
         Label gameTitle = new Label("PLAY");
+        gameTitle.getStyleClass().add("title-label");
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {

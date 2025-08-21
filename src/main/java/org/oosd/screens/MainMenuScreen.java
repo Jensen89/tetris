@@ -3,6 +3,7 @@ package org.oosd.screens;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -24,15 +25,19 @@ public class MainMenuScreen {
         mainScreen.setAlignment(Pos.CENTER);
 
         Button startButton = new Button("Start Game");
+        startButton.getStyleClass().add("menu-button");
         startButton.setOnAction(e -> mainApp.showGameScreen());
 
         Button configButton = new Button("Configuration");
+        configButton.getStyleClass().add("menu-button");
         configButton.setOnAction(e -> mainApp.showConfigScreen());
 
         Button highScoresButton = new Button("High Scores");
+        highScoresButton.getStyleClass().add("menu-button");
         highScoresButton.setOnAction(e -> mainApp.showHighScoresScreen());
 
         Button exitButton = new Button("Exit");
+        exitButton.getStyleClass().add("menu-button");
         exitButton.setOnAction(e -> {
 
             Stage stage = (Stage) root.getScene().getWindow();
