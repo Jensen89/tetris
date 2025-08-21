@@ -236,38 +236,29 @@ public class GameScreen implements TetrisGame.GameEventListener {
             }
 
             switch (event.getCode()) {
-                case LEFT:
-                    game.moveLeft();
-                    break;
-                case RIGHT:
-                    game.moveRight();
-                    break;
-                case DOWN:
+                case LEFT -> game.moveLeft();
+                case RIGHT -> game.moveRight();
+                case DOWN -> {
                     if (!game.moveDown()) {
                         game.tick();
                     }
-                    break;
-                case UP:
-                    game.rotate();
-                    break;
-                case SPACE:
-                    //Hard drop - instantly drop to bottom
-                    game.hardDrop();
-                    break;
-                case R:
-                    //Restart game
-                    restartGame();
-                    break;
-                case P:
-                    //Pause/resume game
+                }
+                case UP -> game.rotate();
+                case SPACE -> game.hardDrop();
+                case R -> restartGame();
+                case P -> {
                     game.togglePause();
                     if (game.isGamePaused()) {
                         showPauseOverlay();
                     } else {
                         hidePauseOverlay();
                     }
-                    break;
+                }
+                default -> {
+                    //Do nothing for other keys
+                }
             }
+
             event.consume(); //Prevent event from bubbling up
         });
     }
