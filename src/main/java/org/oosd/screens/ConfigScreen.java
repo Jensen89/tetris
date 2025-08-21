@@ -31,14 +31,14 @@ public class ConfigScreen {
     }
 
     public void show() {
-        VBox configScreen = new VBox(15);
+        VBox configScreen = new VBox(20);
         configScreen.setPadding(new Insets(20));
         configScreen.setAlignment(Pos.TOP_CENTER);
 
         Label titleLabel = new Label("Configuration");
 
         VBox settingsContainer = new VBox(10);
-        settingsContainer.setAlignment(Pos.CENTER);
+        settingsContainer.setAlignment(Pos.CENTER_LEFT);
         settingsContainer.setPadding(new Insets(20));
 
         //SETTINGS BUTTONS/SLIDERS
@@ -156,14 +156,14 @@ public class ConfigScreen {
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> mainApp.showMainMenuScreen());
 
-        configScreen.getChildren().addAll(
+        settingsContainer.getChildren().addAll(
+                widthBox,
+                heightBox,
+                levelBox,
                 musicBox,
                 soundBox,
                 aiBox,
-                extendBox,
-                widthBox,
-                heightBox,
-                levelBox
+                extendBox
         );
 
         configScreen.getChildren().addAll(titleLabel, settingsContainer, backButton);

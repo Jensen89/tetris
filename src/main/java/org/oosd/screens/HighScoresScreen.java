@@ -21,11 +21,9 @@ public class HighScoresScreen {
     public void show() {
         VBox highScoresScreen = new VBox(10);
         highScoresScreen.setPadding(new Insets(20));
+        highScoresScreen.setAlignment(Pos.TOP_CENTER);
 
-
-        Label label = new Label("High Scores");
-        label.setAlignment(Pos.TOP_CENTER);
-
+        Label titleLabel = new Label("High Scores");
 
         //Dummy high score data
         String[] names = {
@@ -86,7 +84,7 @@ public class HighScoresScreen {
         backButton.setLayoutY(10);
         backButton.setOnAction(e -> mainApp.showMainMenuScreen());
 
-        highScoresScreen.getChildren().addAll(label, scoreGrid, backButton);
+        highScoresScreen.getChildren().addAll(titleLabel, scoreGrid, backButton);
         root.getChildren().setAll(highScoresScreen);
     }
 }
