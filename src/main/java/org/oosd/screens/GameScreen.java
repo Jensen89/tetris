@@ -27,6 +27,8 @@ public class GameScreen implements TetrisGame.GameEventListener {
     //UI components
     private Pane gameArea;
     private VBox gameScreenContainer;
+    private StackPane gameAreaContainer;
+    private VBox pauseOverlay;
 
     //Animation components
     private AnimationTimer gameLoop;
@@ -68,6 +70,16 @@ public class GameScreen implements TetrisGame.GameEventListener {
                         "-fx-background-color: #f0f0f0;"
         );
 
+        //Create container for pause overlay
+        gameAreaContainer = new StackPane();
+        gameAreaContainer.setMaxSize(GAME_WIDTH,GAME_HEIGHT);
+        gameAreaContainer.setAlignment(Pos.CENTER);
+
+        //Create pause overlay
+        createPauseOverlay();
+
+        gameAreaContainer.getChildren().addAll(gameArea, pauseOverlay);
+
         Label gameTitle = new Label("PLAY");
 
         Button backButton = new Button("Back");
@@ -75,6 +87,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
             //Pause the game first if it's running
             if (game.isGameRunning() && !game.isGamePaused()) {
                 game.pauseGame();
+                hidePauseOverlay();
             }
 
             Stage stage = (Stage) root.getScene().getWindow();
@@ -100,7 +113,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
             }
         });
 
-        gameScreenContainer.getChildren().addAll(gameTitle, gameArea, backButton);
+        gameScreenContainer.getChildren().addAll(gameTitle, gameAreaContainer, backButton);
 
         root.getChildren().setAll(gameScreenContainer);
 
@@ -110,6 +123,26 @@ public class GameScreen implements TetrisGame.GameEventListener {
 
         startGame();
     }
+
+    private void createPauseOverlay() {
+        pauseOverlay = new VBox(10);
+        pauseOverlay.setAlignment(Pos.CENTER);
+
+        Label pauseLabel = new Label("Game Paused");
+        Label pauseInstructionLabel = new Label("Press P to continue");
+
+        pauseOverlay.getChildren().addAll(pauseLabel, pauseInstructionLabel);
+        pauseOverlay.setVisible(false);
+    }
+
+    private void showPauseOverlay() {
+        pauseOverlay.setVisible(true);
+    }
+
+    private void hidePauseOverlay() {
+        pauseOverlay.setVisible(false);
+    }
+
 
     private void renderGameGrid() {
         //Clear existing visual blocks
@@ -187,6 +220,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
 
     private void restartGame() {
         game.restartGame();
+        hidePauseOverlay();
     }
 
     //Set up keyboard event handling
@@ -226,6 +260,11 @@ public class GameScreen implements TetrisGame.GameEventListener {
                 case P:
                     //Pause/resume game
                     game.togglePause();
+                    if (game.isGamePaused()) {
+                        showPauseOverlay();
+                    } else {
+                        hidePauseOverlay();
+                    }
                     break;
             }
             event.consume(); //Prevent event from bubbling up

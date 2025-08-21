@@ -3,6 +3,7 @@ package org.oosd.game;
 import org.oosd.game.pieces.TetrisPiece;
 import org.oosd.game.pieces.TetrominoFactory;
 
+import java.awt.*;
 import java.util.Objects;
 
 public class TetrisGame {
