@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -15,6 +16,7 @@ import org.oosd.dialogs.ExitConfirmationDialog;
 import org.oosd.Main;
 import org.oosd.game.TetrisGame;
 import org.oosd.game.pieces.TetrisPiece;
+import org.oosd.ui.ScorePanel;
 
 
 public class GameScreen implements TetrisGame.GameEventListener {
@@ -29,6 +31,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
     private VBox gameScreenContainer;
     private StackPane gameAreaContainer;
     private VBox pauseOverlay;
+    private ScorePanel scorePanel;
 
     //Animation components
     private AnimationTimer gameLoop;
@@ -80,6 +83,14 @@ public class GameScreen implements TetrisGame.GameEventListener {
 
         gameAreaContainer.getChildren().addAll(gameArea, pauseOverlay);
 
+        //Create score panel
+        scorePanel = new ScorePanel();
+
+        //Create horizontal container for score panel and game area
+        HBox gameContainer = new HBox(20);
+        gameContainer.setAlignment(Pos.CENTER);
+        gameContainer.getChildren().addAll(scorePanel, gameAreaContainer);
+
         Label gameTitle = new Label("PLAY");
         gameTitle.getStyleClass().add("title-label");
 
@@ -114,7 +125,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
             }
         });
 
-        gameScreenContainer.getChildren().addAll(gameTitle, gameAreaContainer, backButton);
+        gameScreenContainer.getChildren().addAll(gameTitle, gameContainer, backButton);
 
         root.getChildren().setAll(gameScreenContainer);
 
@@ -221,6 +232,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
 
     private void restartGame() {
         game.restartGame();
+        scorePanel.resetStats();
         hidePauseOverlay();
     }
 
@@ -275,7 +287,12 @@ public class GameScreen implements TetrisGame.GameEventListener {
 
     @Override
     public void onLinesClearedUpdate(int lines){
-        //Add lines cleared ui here
+        scorePanel.updateLines(lines);
+    }
+    
+    @Override
+    public void onScoreUpdate(int score) {
+        scorePanel.updateScore(score);
     }
 }
 

@@ -26,3 +26,26 @@
     -fx-alignment: center;
     -fx-font-family: sans-serif;
 }
+
+/* Score panel styling */
+.score-panel {
+    -fx-background-color: #e8e8e8;
+    -fx-border-color: #333333;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.score-label {
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-font-family: sans-serif;
+}
+
+.score-value {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+    -fx-font-family: monospace;
+}

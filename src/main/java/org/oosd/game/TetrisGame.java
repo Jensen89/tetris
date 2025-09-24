@@ -14,6 +14,8 @@ public class TetrisGame {
     private boolean gameRunning = false;
     private boolean gamePaused = false;
     private boolean gameStarted = false;
+    private int score = 0;
+    private int totalLinesCleared = 0;
 
     //Game dimensions
     private final int gridWidth;
@@ -27,6 +29,7 @@ public class TetrisGame {
         void onGridUpdated();
         void onGameOver();
         void onLinesClearedUpdate(int lines);
+        void onScoreUpdate(int score);
     }
 
     public TetrisGame(int gridWidth, int gridHeight) {
@@ -70,6 +73,9 @@ public class TetrisGame {
         nextPiece = null;
         gameStarted = false;
         gamePaused = false;
+        score = 0;
+        totalLinesCleared = 0;
+        notifyScoreUpdate();
         notifyGridUpdate();
         startGame();
     }
@@ -235,10 +241,13 @@ public class TetrisGame {
         // Clear any complete lines
         int linesCleared = clearCompleteLines();
         if (linesCleared > 0) {
-            // add update score, play sound, etc.
-            System.out.println("Cleared " + linesCleared + " lines!");
+            totalLinesCleared += linesCleared;
+            int lineScore = calculateLineScore(linesCleared);
+            score += lineScore;
+            System.out.println("Cleared " + linesCleared + " lines! Score: +" + lineScore);
             if (listener != null) {
-                listener.onLinesClearedUpdate(linesCleared);
+                listener.onLinesClearedUpdate(totalLinesCleared);
+                listener.onScoreUpdate(score);
             }
         }
 
@@ -314,11 +323,29 @@ public class TetrisGame {
         return linesCleared;
     }
 
-    // Notification method
+    // Notification methods
     private void notifyGridUpdate() {
         if (listener != null) {
             listener.onGridUpdated();
         }
+    }
+    
+    private void notifyScoreUpdate() {
+        if (listener != null) {
+            listener.onScoreUpdate(score);
+            listener.onLinesClearedUpdate(totalLinesCleared);
+        }
+    }
+    
+    // Calculate score based on number of lines cleared
+    private int calculateLineScore(int linesCleared) {
+        return switch (linesCleared) {
+            case 1 -> 100;   // Single
+            case 2 -> 300;   // Double  
+            case 3 -> 500;   // Triple
+            case 4 -> 800;   // Tetris
+            default -> 0;
+        };
     }
 
     // Getters for UI to render
@@ -348,5 +375,13 @@ public class TetrisGame {
 
     public int getGridHeight() {
         return gridHeight;
+    }
+    
+    public int getScore() {
+        return score;
+    }
+    
+    public int getTotalLinesCleared() {
+        return totalLinesCleared;
     }
 }
