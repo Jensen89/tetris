@@ -10,24 +10,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.oosd.Main;
+import org.oosd.config.GameConfig;
 
 public class ConfigScreen {
     private final StackPane root;
     private final Main mainApp;
-
-    //Config variables with defaults set
-    private boolean musicEnabled = true;
-    private boolean soundEffectsEnabled = true;
-    private boolean aiPlayEnabled = false;
-    private boolean extendModeEnabled = false;
-    private int fieldWidth = 10;
-    private int fieldHeight = 20;
-    private int gameLevel = 1;
+    private final GameConfig config;
 
 
     public ConfigScreen(StackPane root, Main mainApp) {
         this.root = root;
         this.mainApp = mainApp;
+        this.config = GameConfig.getInstance();
     }
 
     public void show() {
@@ -47,11 +41,11 @@ public class ConfigScreen {
         HBox musicBox = new HBox(10);
         musicBox.setAlignment(Pos.CENTER_LEFT);
         CheckBox musicCB = new CheckBox("Music (on/off)");
-        musicCB.setSelected(musicEnabled);
-        Label musicStatus = new Label(musicEnabled ? "ON" : "OFF");
+        musicCB.setSelected(config.isMusicEnabled());
+        Label musicStatus = new Label(config.isMusicEnabled() ? "ON" : "OFF");
         musicCB.setOnAction(e -> {
-            musicEnabled = musicCB.isSelected();
-            musicStatus.setText(musicEnabled ? "ON" : "OFF");
+            config.setMusicEnabled(musicCB.isSelected());
+            musicStatus.setText(config.isMusicEnabled() ? "ON" : "OFF");
         });
         musicBox.getChildren().addAll(musicCB, musicStatus);
 
@@ -59,11 +53,11 @@ public class ConfigScreen {
         HBox soundBox = new HBox(10);
         soundBox.setAlignment(Pos.CENTER_LEFT);
         CheckBox soundCB = new CheckBox("Sound Effects (on/off)");
-        soundCB.setSelected(soundEffectsEnabled);
-        Label soundStatus = new Label(soundEffectsEnabled ? "ON" : "OFF");
+        soundCB.setSelected(config.areSoundEffectsEnabled());
+        Label soundStatus = new Label(config.areSoundEffectsEnabled() ? "ON" : "OFF");
         soundCB.setOnAction(e -> {
-            soundEffectsEnabled = soundCB.isSelected();
-            soundStatus.setText(soundEffectsEnabled ? "ON" : "OFF");
+            config.setSoundEffectsEnabled(soundCB.isSelected());
+            soundStatus.setText(config.areSoundEffectsEnabled() ? "ON" : "OFF");
         });
         soundBox.getChildren().addAll(soundCB, soundStatus);
 
@@ -71,11 +65,11 @@ public class ConfigScreen {
         HBox aiBox = new HBox(10);
         aiBox.setAlignment(Pos.CENTER_LEFT);
         CheckBox aiCB = new CheckBox("AI Play (on/off)");
-        aiCB.setSelected(aiPlayEnabled);
-        Label aiStatus = new Label(aiPlayEnabled ? "ON" : "OFF");
+        aiCB.setSelected(config.isAiPlayEnabled());
+        Label aiStatus = new Label(config.isAiPlayEnabled() ? "ON" : "OFF");
         aiCB.setOnAction(e -> {
-            aiPlayEnabled = aiCB.isSelected();
-            aiStatus.setText(aiPlayEnabled ? "ON" : "OFF");
+            config.setAiPlayEnabled(aiCB.isSelected());
+            aiStatus.setText(config.isAiPlayEnabled() ? "ON" : "OFF");
         });
         aiBox.getChildren().addAll(aiCB, aiStatus);
 
@@ -83,11 +77,11 @@ public class ConfigScreen {
         HBox extendBox = new HBox(10);
         extendBox.setAlignment(Pos.CENTER_LEFT);
         CheckBox extendCB = new CheckBox("Extend Mode (on/off)");
-        extendCB.setSelected(extendModeEnabled);
-        Label extendStatus = new Label(extendModeEnabled ? "ON" : "OFF");
+        extendCB.setSelected(config.isExtendModeEnabled());
+        Label extendStatus = new Label(config.isExtendModeEnabled() ? "ON" : "OFF");
         extendCB.setOnAction(e -> {
-            extendModeEnabled = extendCB.isSelected();
-            extendStatus.setText(extendModeEnabled ? "ON" : "OFF");
+            config.setExtendModeEnabled(extendCB.isSelected());
+            extendStatus.setText(config.isExtendModeEnabled() ? "ON" : "OFF");
         });
         extendBox.getChildren().addAll(extendCB, extendStatus);
 
@@ -96,7 +90,7 @@ public class ConfigScreen {
         Label widthLabel = new Label("Field Width");
         HBox widthControls = new HBox(10);
         widthControls.setAlignment(Pos.CENTER_LEFT);
-        Slider widthSlider = new Slider(5, 15, fieldWidth);
+        Slider widthSlider = new Slider(5, 15, config.getFieldWidth());
         widthSlider.setShowTickLabels(true);
         widthSlider.setShowTickMarks(true);
         widthSlider.setMajorTickUnit(5);
@@ -104,10 +98,10 @@ public class ConfigScreen {
         widthSlider.setSnapToTicks(true);
         widthSlider.setBlockIncrement(1);
         widthSlider.setPrefWidth(200);
-        Label widthValue = new Label(String.valueOf(fieldWidth));
+        Label widthValue = new Label(String.valueOf(config.getFieldWidth()));
         widthSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            fieldWidth = newValue.intValue();
-            widthValue.setText(String.valueOf(fieldWidth));
+            config.setFieldWidth(newValue.intValue());
+            widthValue.setText(String.valueOf(config.getFieldWidth()));
         });
         widthControls.getChildren().addAll(widthSlider, widthValue);
         widthBox.getChildren().addAll(widthLabel, widthControls);
@@ -117,7 +111,7 @@ public class ConfigScreen {
         Label heightLabel = new Label("Field Height");
         HBox heightControls = new HBox(10);
         heightControls.setAlignment(Pos.CENTER_LEFT);
-        Slider heightSlider = new Slider(15, 30, fieldHeight);
+        Slider heightSlider = new Slider(15, 30, config.getFieldHeight());
         heightSlider.setShowTickLabels(true);
         heightSlider.setShowTickMarks(true);
         heightSlider.setMajorTickUnit(5);
@@ -125,10 +119,10 @@ public class ConfigScreen {
         heightSlider.setSnapToTicks(true);
         heightSlider.setBlockIncrement(1);
         heightSlider.setPrefWidth(200);
-        Label heightValue = new Label(String.valueOf(fieldHeight));
+        Label heightValue = new Label(String.valueOf(config.getFieldHeight()));
         heightSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            fieldHeight = newValue.intValue();
-            heightValue.setText(String.valueOf(fieldHeight));
+            config.setFieldHeight(newValue.intValue());
+            heightValue.setText(String.valueOf(config.getFieldHeight()));
         });
         heightControls.getChildren().addAll(heightSlider, heightValue);
         heightBox.getChildren().addAll(heightLabel, heightControls);
@@ -138,24 +132,27 @@ public class ConfigScreen {
         Label levelLabel = new Label("Game Level");
         HBox levelControls = new HBox(10);
         levelControls.setAlignment(Pos.CENTER_LEFT);
-        Slider levelSlider = new Slider(1, 10, gameLevel);
+        Slider levelSlider = new Slider(1, 10, config.getGameLevel());
         levelSlider.setShowTickLabels(true);
         levelSlider.setShowTickMarks(true);
         levelSlider.setMajorTickUnit(1);
         levelSlider.setSnapToTicks(true);
         levelSlider.setBlockIncrement(1);
         levelSlider.setPrefWidth(200);
-        Label levelValue = new Label(String.valueOf(gameLevel));
+        Label levelValue = new Label(String.valueOf(config.getGameLevel()));
         levelSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            gameLevel = newValue.intValue();
-            levelValue.setText(String.valueOf(gameLevel));
+            config.setGameLevel(newValue.intValue());
+            levelValue.setText(String.valueOf(config.getGameLevel()));
         });
         levelControls.getChildren().addAll(levelSlider, levelValue);
         levelBox.getChildren().addAll(levelLabel, levelControls);
 
         // Back button
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> mainApp.showMainMenuScreen());
+        backButton.setOnAction(e -> {
+            config.saveConfig();
+            mainApp.showMainMenuScreen();
+        });
 
         settingsContainer.getChildren().addAll(
                 widthBox,

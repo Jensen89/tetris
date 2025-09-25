@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import org.oosd.dialogs.ExitConfirmationDialog;
 import org.oosd.Main;
+import org.oosd.config.GameConfig;
 import org.oosd.game.TetrisGame;
 import org.oosd.game.pieces.TetrisPiece;
 import org.oosd.ui.ScorePanel;
@@ -48,8 +49,9 @@ public class GameScreen implements TetrisGame.GameEventListener {
 
     public void show() {
 
-        //Initialise game
-        game = new TetrisGame(10,20);
+        //Initialise game with config dimensions
+        GameConfig config = GameConfig.getInstance();
+        game = new TetrisGame(config.getFieldWidth(), config.getFieldHeight());
         game.setEventListener(this);
 
         //Main container
