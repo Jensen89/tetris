@@ -1,0 +1,9 @@
+{
+  "highScores" : [ {
+    "playerName" : "Adam",
+    "score" : 400,
+    "linesCleared" : 3,
+    "date" : "2025-09-25T12:09:18",
+    "fieldSize" : "10x20"
+  } ]
+}

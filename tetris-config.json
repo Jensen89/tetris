@@ -2,7 +2,7 @@
   "musicEnabled" : false,
   "aiPlayEnabled" : false,
   "extendModeEnabled" : false,
-  "fieldWidth" : 15,
+  "fieldWidth" : 10,
   "fieldHeight" : 20,
   "gameLevel" : 3
 }

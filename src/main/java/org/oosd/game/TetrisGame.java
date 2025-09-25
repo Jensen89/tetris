@@ -277,13 +277,17 @@ public class TetrisGame {
 
     // Game over handling
     private void gameOver() {
+        System.out.println("TetrisGame: gameOver() method called");
         stopGame();
         System.out.println("Game Over! Press R to restart");
         currentPiece = null;
         nextPiece = null;
 
         if (listener != null) {
+            System.out.println("TetrisGame: Calling listener.onGameOver()");
             listener.onGameOver();
+        } else {
+            System.out.println("TetrisGame: No listener set!");
         }
     }
 

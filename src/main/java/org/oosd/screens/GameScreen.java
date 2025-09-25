@@ -13,10 +13,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import org.oosd.dialogs.ExitConfirmationDialog;
+import org.oosd.dialogs.NameEntryDialog;
 import org.oosd.Main;
 import org.oosd.config.GameConfig;
 import org.oosd.game.TetrisGame;
 import org.oosd.game.pieces.TetrisPiece;
+import org.oosd.manager.HighScoreManager;
+import org.oosd.model.HighScore;
 import org.oosd.ui.ScorePanel;
 
 
@@ -116,7 +119,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
 
             if (shouldQuit) {
                 stopGame();
-                mainApp.showMainMenuScreen();
+                handleGameEnd(true);
             } else {
                 if (game.isGamePaused() && game.isGameStarted()) {
                     game.resumeGame();
@@ -284,7 +287,45 @@ public class GameScreen implements TetrisGame.GameEventListener {
 
     @Override
     public void onGameOver() {
-        //Add game over ui here
+        System.out.println("GameScreen: onGameOver() called");
+        // Stop the game loop immediately to prevent further updates
+        if (gameLoop != null) {
+            gameLoop.stop();
+        }
+        handleGameEnd(false);
+    }
+    
+    private void handleGameEnd(boolean isQuit) {
+        int finalScore = scorePanel.getCurrentScore();
+        int totalLines = scorePanel.getTotalLines();
+        
+        if (finalScore > 0) {
+            HighScoreManager highScoreManager = HighScoreManager.getInstance();
+            
+            if (highScoreManager.isHighScore(finalScore)) {
+                // Get field size for high score record
+                String fieldSize = game.getGridWidth() + "x" + game.getGridHeight();
+                int rank = highScoreManager.getScoreRank(finalScore);
+                
+                // Show name entry dialog
+                Stage stage = (Stage) root.getScene().getWindow();
+                NameEntryDialog nameDialog = new NameEntryDialog();
+                String playerName = nameDialog.showDialog(stage, finalScore, rank);
+                
+                if (playerName != null) {
+                    // Save the high score
+                    HighScore highScore = new HighScore(playerName, finalScore, totalLines, fieldSize);
+                    highScoreManager.addHighScore(highScore);
+                    
+                    // Show high scores screen
+                    mainApp.showHighScoresScreen();
+                    return;
+                }
+            }
+        }
+        
+        // If no high score achieved or user canceled, return to main menu
+        mainApp.showMainMenuScreen();
     }
 
     @Override
