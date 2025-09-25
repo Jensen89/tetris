@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.oosd.game.pieces.TetrisPiece;
 
 public class ScorePanel extends VBox {
     
@@ -11,6 +12,7 @@ public class ScorePanel extends VBox {
     private Label linesLabel;
     private Label scoreValueLabel;
     private Label linesValueLabel;
+    private NextPiecePreview nextPiecePreview;
     
     private int currentScore = 0;
     private int totalLines = 0;
@@ -37,7 +39,9 @@ public class ScorePanel extends VBox {
         linesValueLabel = new Label("0");
         linesValueLabel.getStyleClass().add("score-value");
         
-        getChildren().addAll(scoreLabel, scoreValueLabel, linesLabel, linesValueLabel);
+        nextPiecePreview = new NextPiecePreview();
+        
+        getChildren().addAll(scoreLabel, scoreValueLabel, linesLabel, linesValueLabel, nextPiecePreview);
         
         getStyleClass().add("score-panel");
     }
@@ -52,11 +56,16 @@ public class ScorePanel extends VBox {
         linesValueLabel.setText(String.valueOf(lines));
     }
     
+    public void updateNextPiece(TetrisPiece nextPiece) {
+        nextPiecePreview.updateNextPiece(nextPiece);
+    }
+    
     public void resetStats() {
         currentScore = 0;
         totalLines = 0;
         scoreValueLabel.setText("0");
         linesValueLabel.setText("0");
+        nextPiecePreview.clear();
     }
     
     public int getCurrentScore() {

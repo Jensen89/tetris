@@ -30,6 +30,7 @@ public class TetrisGame {
         void onGameOver();
         void onLinesClearedUpdate(int lines);
         void onScoreUpdate(int score);
+        void onNextPieceUpdate(TetrisPiece nextPiece);
     }
 
     public TetrisGame(int gridWidth, int gridHeight) {
@@ -61,6 +62,9 @@ public class TetrisGame {
         // Only spawn a new piece if we don't have one
         if (currentPiece == null) {
             spawnNewPiece();
+        } else {
+            // Notify about existing next piece on game start
+            notifyNextPieceUpdate();
         }
 
         notifyGridUpdate();
@@ -268,6 +272,7 @@ public class TetrisGame {
         }
 
         notifyGridUpdate();
+        notifyNextPieceUpdate();
     }
 
     // Game over handling
@@ -337,6 +342,12 @@ public class TetrisGame {
         }
     }
     
+    private void notifyNextPieceUpdate() {
+        if (listener != null) {
+            listener.onNextPieceUpdate(nextPiece);
+        }
+    }
+    
     // Calculate score based on number of lines cleared
     private int calculateLineScore(int linesCleared) {
         return switch (linesCleared) {
@@ -383,5 +394,9 @@ public class TetrisGame {
     
     public int getTotalLinesCleared() {
         return totalLinesCleared;
+    }
+    
+    public TetrisPiece getNextPiece() {
+        return nextPiece;
     }
 }

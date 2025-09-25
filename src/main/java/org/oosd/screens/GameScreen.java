@@ -294,5 +294,10 @@ public class GameScreen implements TetrisGame.GameEventListener {
     public void onScoreUpdate(int score) {
         scorePanel.updateScore(score);
     }
+    
+    @Override
+    public void onNextPieceUpdate(TetrisPiece nextPiece) {
+        scorePanel.updateNextPiece(nextPiece);
+    }
 }
 
