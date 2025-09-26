@@ -1,9 +1,21 @@
 {
   "highScores" : [ {
+    "playerName" : "S effect T",
+    "score" : 500,
+    "linesCleared" : 4,
+    "date" : "2025-09-26T13:33:27",
+    "fieldSize" : "10x20"
+  }, {
     "playerName" : "Adam",
     "score" : 400,
     "linesCleared" : 3,
     "date" : "2025-09-25T12:09:18",
+    "fieldSize" : "10x20"
+  }, {
+    "playerName" : "music test",
+    "score" : 200,
+    "linesCleared" : 2,
+    "date" : "2025-09-26T13:15:30",
     "fieldSize" : "10x20"
   } ]
 }

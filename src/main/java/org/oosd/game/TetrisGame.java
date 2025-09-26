@@ -2,6 +2,7 @@ package org.oosd.game;
 
 import org.oosd.game.pieces.TetrisPiece;
 import org.oosd.game.pieces.TetrominoFactory;
+import org.oosd.audio.SoundEffectsManager;
 
 import java.awt.*;
 import java.util.Objects;
@@ -165,6 +166,10 @@ public class TetrisGame {
             if (canPlacePiece(currentPiece, 0, 0, newRotation)) {
                 currentPiece.rotate();
                 notifyGridUpdate();
+
+                // Play rotation sound effect
+                SoundEffectsManager.getInstance().playSound(SoundEffectsManager.SoundEffect.PIECE_ROTATE);
+
                 return true;
             }
         }
@@ -249,6 +254,10 @@ public class TetrisGame {
             int lineScore = calculateLineScore(linesCleared);
             score += lineScore;
             System.out.println("Cleared " + linesCleared + " lines! Score: +" + lineScore);
+
+            // Play line clear sound effect
+            SoundEffectsManager.getInstance().playSound(SoundEffectsManager.SoundEffect.LINE_CLEAR);
+
             if (listener != null) {
                 listener.onLinesClearedUpdate(totalLinesCleared);
                 listener.onScoreUpdate(score);

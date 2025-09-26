@@ -94,10 +94,12 @@ public class GameConfig {
     // Setters
     public void setMusicEnabled(boolean musicEnabled) {
         this.musicEnabled = musicEnabled;
+        saveConfig();
     }
     
     public void setSoundEffectsEnabled(boolean soundEffectsEnabled) {
         this.soundEffectsEnabled = soundEffectsEnabled;
+        saveConfig();
     }
     
     public void setAiPlayEnabled(boolean aiPlayEnabled) {

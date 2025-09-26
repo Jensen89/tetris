@@ -21,6 +21,8 @@ import org.oosd.game.pieces.TetrisPiece;
 import org.oosd.manager.HighScoreManager;
 import org.oosd.model.HighScore;
 import org.oosd.ui.ScorePanel;
+import org.oosd.audio.MusicManager;
+import org.oosd.audio.SoundEffectsManager;
 
 
 public class GameScreen implements TetrisGame.GameEventListener {
@@ -270,6 +272,17 @@ public class GameScreen implements TetrisGame.GameEventListener {
                     } else {
                         hidePauseOverlay();
                     }
+                }
+                case M -> {
+                    GameConfig config = GameConfig.getInstance();
+                    config.setMusicEnabled(!config.isMusicEnabled());
+                    MusicManager.getInstance().updateFromConfig();
+                    System.out.println("Music " + (config.isMusicEnabled() ? "enabled" : "disabled"));
+                }
+                case N -> {
+                    GameConfig config = GameConfig.getInstance();
+                    config.setSoundEffectsEnabled(!config.areSoundEffectsEnabled());
+                    System.out.println("Sound Effects " + (config.areSoundEffectsEnabled() ? "enabled" : "disabled"));
                 }
                 default -> {
                     //Do nothing for other keys

@@ -5,6 +5,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.oosd.screens.*;
+import org.oosd.audio.MusicManager;
+import org.oosd.audio.SoundEffectsManager;
 
 
 public class Main extends Application {
@@ -31,6 +33,10 @@ public class Main extends Application {
 
         primaryStage.setTitle("My JavaFX Application");
         primaryStage.setScene(scene);
+
+        // Initialize audio managers
+        MusicManager.getInstance().updateFromConfig();
+        SoundEffectsManager.getInstance(); // Initialize sound effects
 
         // Show splash screen
         SplashScreen splashScreen = new SplashScreen(this, primaryStage, 600, 600);
@@ -66,6 +72,12 @@ public class Main extends Application {
             highScoresScreen = new HighScoresScreen(root, this);
         }
         highScoresScreen.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        MusicManager.getInstance().dispose();
+        super.stop();
     }
 
     public static void main(String[] args) {

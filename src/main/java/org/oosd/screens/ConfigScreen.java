@@ -11,6 +11,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.oosd.Main;
 import org.oosd.config.GameConfig;
+import org.oosd.audio.MusicManager;
+import org.oosd.audio.SoundEffectsManager;
 
 public class ConfigScreen {
     private final StackPane root;
@@ -46,6 +48,7 @@ public class ConfigScreen {
         musicCB.setOnAction(e -> {
             config.setMusicEnabled(musicCB.isSelected());
             musicStatus.setText(config.isMusicEnabled() ? "ON" : "OFF");
+            MusicManager.getInstance().updateFromConfig();
         });
         musicBox.getChildren().addAll(musicCB, musicStatus);
 
@@ -58,6 +61,11 @@ public class ConfigScreen {
         soundCB.setOnAction(e -> {
             config.setSoundEffectsEnabled(soundCB.isSelected());
             soundStatus.setText(config.areSoundEffectsEnabled() ? "ON" : "OFF");
+
+            // Play test sound if sound effects are enabled
+            if (config.areSoundEffectsEnabled()) {
+                SoundEffectsManager.getInstance().playSound(SoundEffectsManager.SoundEffect.PIECE_ROTATE);
+            }
         });
         soundBox.getChildren().addAll(soundCB, soundStatus);
 
