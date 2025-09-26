@@ -1,5 +1,6 @@
 {
   "musicEnabled" : false,
+  "soundEffectsEnabled" : false,
   "aiPlayEnabled" : false,
   "extendModeEnabled" : false,
   "fieldWidth" : 10,

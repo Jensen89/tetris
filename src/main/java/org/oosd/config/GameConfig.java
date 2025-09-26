@@ -70,6 +70,11 @@ public class GameConfig {
     public boolean areSoundEffectsEnabled() {
         return soundEffectsEnabled;
     }
+
+    // Jackson-compatible getter for JSON serialization
+    public boolean getSoundEffectsEnabled() {
+        return soundEffectsEnabled;
+    }
     
     public boolean isAiPlayEnabled() {
         return aiPlayEnabled;
