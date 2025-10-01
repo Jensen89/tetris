@@ -13,11 +13,13 @@ import org.oosd.Main;
 import org.oosd.config.GameConfig;
 import org.oosd.audio.MusicManager;
 import org.oosd.audio.SoundEffectsManager;
+import org.oosd.ui.ScorePanel;
 
 public class ConfigScreen {
     private final StackPane root;
     private final Main mainApp;
     private final GameConfig config;
+
 
 
     public ConfigScreen(StackPane root, Main mainApp) {
@@ -46,9 +48,14 @@ public class ConfigScreen {
         musicCB.setSelected(config.isMusicEnabled());
         Label musicStatus = new Label(config.isMusicEnabled() ? "ON" : "OFF");
         musicCB.setOnAction(e -> {
+            boolean enabled = musicCB.isSelected();
             config.setMusicEnabled(musicCB.isSelected());
             musicStatus.setText(config.isMusicEnabled() ? "ON" : "OFF");
             MusicManager.getInstance().updateFromConfig();
+
+            if (mainApp.getGameScreen() != null) {
+                mainApp.getGameScreen().updateMusicStatus(enabled);
+            }
         });
         musicBox.getChildren().addAll(musicCB, musicStatus);
 
@@ -59,12 +66,17 @@ public class ConfigScreen {
         soundCB.setSelected(config.areSoundEffectsEnabled());
         Label soundStatus = new Label(config.areSoundEffectsEnabled() ? "ON" : "OFF");
         soundCB.setOnAction(e -> {
+            boolean enabled = soundCB.isSelected();
             config.setSoundEffectsEnabled(soundCB.isSelected());
             soundStatus.setText(config.areSoundEffectsEnabled() ? "ON" : "OFF");
 
             // Play test sound if sound effects are enabled
             if (config.areSoundEffectsEnabled()) {
                 SoundEffectsManager.getInstance().playSound(SoundEffectsManager.SoundEffect.PIECE_ROTATE);
+            }
+
+            if (mainApp.getGameScreen() != null) {
+                mainApp.getGameScreen().updateSoundEffectsStatus(enabled);
             }
         });
         soundBox.getChildren().addAll(soundCB, soundStatus);

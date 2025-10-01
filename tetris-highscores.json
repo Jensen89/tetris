@@ -1,5 +1,11 @@
 {
   "highScores" : [ {
+    "playerName" : "testing",
+    "score" : 1900,
+    "linesCleared" : 13,
+    "date" : "2025-10-01T09:25:37",
+    "fieldSize" : "10x20"
+  }, {
     "playerName" : "test",
     "score" : 600,
     "linesCleared" : 4,
@@ -24,6 +30,12 @@
     "date" : "2025-09-25T12:09:18",
     "fieldSize" : "10x20"
   }, {
+    "playerName" : "test",
+    "score" : 300,
+    "linesCleared" : 3,
+    "date" : "2025-10-01T09:14:35",
+    "fieldSize" : "10x20"
+  }, {
     "playerName" : "music test",
     "score" : 200,
     "linesCleared" : 2,
@@ -46,12 +58,6 @@
     "score" : 100,
     "linesCleared" : 1,
     "date" : "2025-09-26T14:36:31",
-    "fieldSize" : "10x20"
-  }, {
-    "playerName" : "afaf",
-    "score" : 100,
-    "linesCleared" : 1,
-    "date" : "2025-09-26T14:59:55",
     "fieldSize" : "10x20"
   } ]
 }

@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import org.oosd.screens.*;
 import org.oosd.audio.MusicManager;
 import org.oosd.audio.SoundEffectsManager;
+import org.oosd.ui.ScorePanel;
 
 
 public class Main extends Application {
@@ -78,6 +79,10 @@ public class Main extends Application {
     public void stop() throws Exception {
         MusicManager.getInstance().dispose();
         super.stop();
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
     }
 
     public static void main(String[] args) {

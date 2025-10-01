@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.oosd.config.GameConfig;
 import org.oosd.game.pieces.TetrisPiece;
 
 public class ScorePanel extends VBox {
@@ -40,8 +41,16 @@ public class ScorePanel extends VBox {
         linesValueLabel.getStyleClass().add("score-value");
         
         nextPiecePreview = new NextPiecePreview();
+
+        GameConfig config = GameConfig.getInstance();
+
+        Label levelLabel = new Label("LEVEL");
+        levelLabel.getStyleClass().add("score-label");
+
+        Label levelValueLabel = new Label(String.valueOf(config.getGameLevel()));
+        levelValueLabel.getStyleClass().add("score-value");
         
-        getChildren().addAll(scoreLabel, scoreValueLabel, linesLabel, linesValueLabel, nextPiecePreview);
+        getChildren().addAll(scoreLabel, scoreValueLabel, linesLabel, linesValueLabel,  levelLabel, levelValueLabel, nextPiecePreview);
         
         getStyleClass().add("score-panel");
     }

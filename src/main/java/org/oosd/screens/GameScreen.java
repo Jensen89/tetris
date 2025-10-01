@@ -45,6 +45,8 @@ public class GameScreen implements TetrisGame.GameEventListener {
     private VBox player2PauseOverlay; // For 2-player mode
     private ScorePanel scorePanel;
     private ScorePanel player2ScorePanel; // For 2-player mode
+    private Label musicStatusLabel; // Music on or off
+    private Label soundStatusLabel; // Sound effects on or off
 
     //Animation components
     private AnimationTimer gameLoop;
@@ -103,6 +105,12 @@ public class GameScreen implements TetrisGame.GameEventListener {
         Label gameTitle = new Label(titleText);
         gameTitle.getStyleClass().add("title-label");
 
+        musicStatusLabel = new Label("MUSIC: " + (config.isMusicEnabled() ? "ON" : "OFF"));
+        musicStatusLabel.getStyleClass().add("score-label");
+
+        soundStatusLabel = new Label("SOUND: " + (config.areSoundEffectsEnabled() ?  "ON" : "OFF"));
+        soundStatusLabel.getStyleClass().add("score-label");
+
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
             //Pause the games first if they're running
@@ -141,7 +149,7 @@ public class GameScreen implements TetrisGame.GameEventListener {
             }
         });
 
-        gameScreenContainer.getChildren().addAll(gameTitle, gameContainer, backButton);
+        gameScreenContainer.getChildren().addAll(gameTitle, musicStatusLabel, soundStatusLabel, gameContainer,backButton);
 
         root.getChildren().setAll(gameScreenContainer);
 
@@ -494,16 +502,30 @@ public class GameScreen implements TetrisGame.GameEventListener {
                     config.setMusicEnabled(!config.isMusicEnabled());
                     MusicManager.getInstance().updateFromConfig();
                     System.out.println("Music " + (config.isMusicEnabled() ? "enabled" : "disabled"));
+                    updateMusicStatus(config.isMusicEnabled());
                 }
                 case N -> {
                     GameConfig config = GameConfig.getInstance();
                     config.setSoundEffectsEnabled(!config.areSoundEffectsEnabled());
                     System.out.println("Sound Effects " + (config.areSoundEffectsEnabled() ? "enabled" : "disabled"));
+                    updateSoundEffectsStatus(config.areSoundEffectsEnabled());
                 }
             }
 
             event.consume(); //Prevent event from bubbling up
         });
+    }
+
+    public void updateMusicStatus(boolean enabled) {
+        if (musicStatusLabel != null) {
+            musicStatusLabel.setText(enabled ? "MUSIC: ON" : "MUSIC: OFF");
+        }
+    }
+
+    public void updateSoundEffectsStatus(boolean enabled) {
+        if (soundStatusLabel != null) {
+            soundStatusLabel.setText(enabled ? "SOUND: ON" : "SOUND: OFF");
+        }
     }
 
     @Override
